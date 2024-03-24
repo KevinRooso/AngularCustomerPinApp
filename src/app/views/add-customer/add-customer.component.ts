@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MainService } from '../../main.service';
-import { Validators } from '../../shared/validators';
+import { customValidators } from '../../shared/validators';
+import { ToastrService } from 'ngx-toastr';
 declare var $: any;
 
 @Component({
@@ -21,13 +22,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   regionSubscription: any;
   modalSubscription: any;
 
-  public validators = Validators;
+  public customValidators = customValidators;
 
   @ViewChild('custModal') custModal: any;
   @ViewChild('custForm') custForm: any;
   currentModal: String = '';
 
-  constructor(private mainService: MainService){
+  constructor(private mainService: MainService,
+    private toastr: ToastrService){
     this.modalSubscription = this.mainService.getModalValue().subscribe(value => {
       if(value == 'customer'){
         this.ngOnInit();
@@ -86,6 +88,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     customerList.push(request);
 
     localStorage.setItem('customerList',JSON.stringify(customerList));
+    this.toastr.success('Customer added successfully');
 
     this.resetData();
     
@@ -98,14 +101,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     this.title = '';
     this.email = '';
 
-    this.custForm.controls['title'].setValidators(null);
-    this.custForm.controls['title'].updateValueAndValidity();
-    this.custForm.controls['email'].setValidators(null);
-    this.custForm.controls['email'].updateValueAndValidity();
-    this.custForm.controls['region'].setValidators(null);
-    this.custForm.controls['region'].updateValueAndValidity();
-    this.custForm.controls['country'].setValidators(null);
-    this.custForm.controls['country'].updateValueAndValidity();
+    // Validators reset
+    const formControls = this.custForm.form.controls;
+  Object.keys(formControls).forEach(key => {
+    formControls[key].markAsUntouched();
+    formControls[key].markAsPristine();
+  });
+
     // Used Jquery to Handle Modal events / Could also use NgbBootstrap to handle this
     $(this.custModal.nativeElement).modal('hide');
     this.mainService.toggleModal('');

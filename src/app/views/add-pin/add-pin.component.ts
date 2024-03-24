@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MainService } from '../../main.service';
-import { Validators } from '../../shared/validators';
+import { customValidators } from '../../shared/validators';
 declare var $: any;
 import {  FileUploader } from 'ng2-file-upload';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { ToastrService } from 'ngx-toastr';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-pin',
@@ -29,7 +30,7 @@ export class AddPinComponent implements OnInit,OnDestroy{
   response:string;
 
   // Custom Validator
-  public validators = Validators;
+  public customValidators = customValidators;
 
   // Modal and Form
   @ViewChild('pModal') pModal: any;
@@ -146,12 +147,11 @@ export class AddPinComponent implements OnInit,OnDestroy{
     this.uploader.queue = [];
     this.imageUrl = null;
 
-    this.pinForm.controls['title'].setValidators(null);
-    this.pinForm.controls['title'].updateValueAndValidity();
-    this.pinForm.controls['privacy'].setValidators(null);
-    this.pinForm.controls['privacy'].updateValueAndValidity();
-    this.pinForm.controls['customer'].setValidators(null);
-    this.pinForm.controls['customer'].updateValueAndValidity();
+    const formControls = this.pinForm.form.controls;
+    Object.keys(formControls).forEach(key => {
+      formControls[key].markAsUntouched();
+      formControls[key].markAsPristine();
+    });
     // Used Jquery to Handle Modal events / Could also use NgbBootstrap to handle this
     $(this.pModal.nativeElement).modal('hide');
     this.mainService.toggleModal('');

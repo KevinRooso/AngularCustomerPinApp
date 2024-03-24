@@ -1,5 +1,5 @@
 // Validator Patterns 
 
-export const Validators = {
+export const customValidators = {
     email: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 }
