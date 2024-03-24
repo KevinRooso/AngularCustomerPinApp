@@ -31,7 +31,7 @@
                 <div class="form-group col-8">
                     <label for="countries">Country<span class="required">*</span></label>
                     <ngx-select [items]="countryData" name="country" [(ngModel)]="selectedCountry"
-                    required="true" [disabled]="selectedRegion == ''"></ngx-select>
+                    required="true" [disabled]="selectedRegion == '' || this.selectedRegion == null"></ngx-select>
                 </div>
             </form>
         </div>
