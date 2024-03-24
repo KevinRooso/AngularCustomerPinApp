@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MainService } from '../../main.service';
 import { Validators } from '../../shared/validators';
 declare var $: any;
 import {  FileUploader } from 'ng2-file-upload';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-pin',
@@ -11,6 +13,10 @@ import {  FileUploader } from 'ng2-file-upload';
 })
 export class AddPinComponent implements OnInit,OnDestroy{
 
+  // Parent Component
+  @Input() parent:any;
+  
+  // Form Items
   title:String = '';
   email:String = '';  
   privacy: String = '';
@@ -22,15 +28,19 @@ export class AddPinComponent implements OnInit,OnDestroy{
   hasAnotherDropZoneOver:boolean;
   response:string;
 
+  // Custom Validator
   public validators = Validators;
 
+  // Modal and Form
   @ViewChild('pModal') pModal: any;
   @ViewChild('pinForm') pinForm: any;
   imageUrl: string | ArrayBuffer | null = null;
   modalSubscription: any;
   currentModal:any = '';
 
-  constructor(private mainService: MainService){
+  constructor(private mainService: MainService,
+    private indexedDBService: NgxIndexedDBService,
+    private toastr: ToastrService){
     this.uploader = new FileUploader({
       url: '',
       disableMultipart: true,
@@ -117,15 +127,15 @@ export class AddPinComponent implements OnInit,OnDestroy{
       privacy: this.privacy
     };
 
-    let pinList:any = [];
-    if(localStorage.getItem('pinList')){
-      pinList = JSON.parse(localStorage.getItem('pinList') || '');
-    }
-    pinList.push(request);
-
-    localStorage.setItem('pinList',JSON.stringify(pinList));
-
-    this.resetData();
+    this.indexedDBService.add('pins',request).subscribe({
+      next:(res:any) => {
+        this.toastr.success('Pin added successfully');
+        this.parent.fetchPins();
+        this.resetData();
+      },
+      error:(error:any) =>{
+        this.toastr.error('Error saving pin');      }
+    });    
     
   }
 

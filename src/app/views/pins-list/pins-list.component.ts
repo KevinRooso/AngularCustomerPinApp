@@ -1,4 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 import { MainService } from 'src/app/main.service';
 
 @Component({
@@ -10,38 +13,54 @@ export class PinsListComponent implements OnInit,OnDestroy{
 
   pinsData: Array<any> = [];
 
-  modalSubscription:any;
+  pinsSubscription:any;
   currentModal:String = '';
+  loader: boolean = false;
 
-  constructor(public mainService: MainService){
-    this.modalSubscription = this.mainService.getModalValue().subscribe(value => {
-      if(value == ''){
-        this.ngOnInit();
-        this.currentModal = value;
+  public parent = this;
+
+  constructor(public mainService: MainService,
+    private indexedDBService: NgxIndexedDBService,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService){
+    
+  }
+
+  ngOnInit(){
+    this.fetchPins();
+  }
+
+  // clearDatabase() {
+  //   this.indexedDBService.clear('pins').subscribe({
+  //     next:(res:any) => {
+      
+  //     },
+  //     error:(err:any) =>{
+  //       this.toastr.error('Error fetching pins');
+  //     }
+  //   });
+  // }
+
+  // Fetch Pins using IndexedDB
+  fetchPins() {
+    this.pinsSubscription = this.indexedDBService.getAll('pins').subscribe({
+      next:(res:any) => {
+        this.pinsData = res;
+        this.toastr.success('Pins fetched successfully');
+      },
+      error:(err:any) =>{
+        this.toastr.error('Error fetching pins');
       }
     });
   }
 
-  ngOnInit(){
-    this.fetchPinsList();
-  }
-
-  fetchPinsList(){
-    if(localStorage.getItem('pinList')){
-      this.pinsData = JSON.parse(localStorage.getItem('pinList') || '');
-      console.log(this.pinsData);
-      
-    }else{
-      this.pinsData = [];
-    }    
-  }
-
+  // Customers String Concat
   getCustomers(customers:any){
     return customers.join(', ');
   }
 
   ngOnDestroy(){
-    this.modalSubscription.unsubscribe();
+    this.pinsSubscription.unsubscribe();
   }
 
 }

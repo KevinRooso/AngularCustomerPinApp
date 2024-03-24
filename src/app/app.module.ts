@@ -11,6 +11,26 @@ import { NgxSelectModule } from 'ngx-select-ex';
 import { HttpClientModule } from '@angular/common/http';
 import { AddPinComponent } from './views/add-pin/add-pin.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
+import { ToastrModule } from 'ngx-toastr';
+
+
+const dbConfig: DBConfig  = {
+  name: 'myDb',
+  version: 1,
+  objectStoresMeta: [
+    {
+      store: 'pins',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'title', keypath: 'title', options: { unique: false } },
+        { name: 'imageFileObj', keypath: 'imageFileObj', options: { unique: false } },
+        { name: 'customers', keypath: 'customers', options: { unique: false } },
+        { name: 'privacy', keypath: 'privacy', options: { unique: false } }
+      ]
+    }
+  ]
+};
 
 @NgModule({
   declarations: [
@@ -26,7 +46,9 @@ import { FileUploadModule } from 'ng2-file-upload';
     FormsModule,
     NgxSelectModule,
     HttpClientModule,
-    FileUploadModule
+    FileUploadModule,
+    ToastrModule.forRoot(),
+    NgxIndexedDBModule.forRoot(dbConfig)
   ],
   providers: [],
   bootstrap: [AppComponent]

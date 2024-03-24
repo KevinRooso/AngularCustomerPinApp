@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^16.2.0",
+    "@angular/animations": "^16.2.12",
     "@angular/common": "^16.2.0",
     "@angular/compiler": "^16.2.0",
     "@angular/core": "^16.2.0",
@@ -20,8 +20,11 @@
     "@angular/router": "^16.2.0",
     "bootstrap": "^5.3.3",
     "jquery": "^3.7.1",
-    "ngx-select-ex": "^8.0.1",
     "ng2-file-upload": "^5.0.0",
+    "ngx-indexed-db": "^16.0.0",
+    "ngx-select-ex": "^8.0.1",
+    "ngx-spinner": "^16.0.2",
+    "ngx-toastr": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

@@ -1,9 +1,9 @@
 <div class="d-flex justify-content-between align-items-center p-2">
     <h3>List of Pins</h3>
     <div>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal"
+        <button class="btn btn-primary cursor-pointer" data-bs-toggle="modal" data-bs-target="#customerModal"
         (click)="mainService.toggleModal('customer')">+ Create Customer</button>
-        <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#pinModal"
+        <button class="btn btn-primary ms-3 cursor-pointer" data-bs-toggle="modal" data-bs-target="#pinModal"
         (click)="mainService.toggleModal('pin')">+ Add Pin</button>
     </div>
 </div>
@@ -24,9 +24,14 @@
             </td>
             <td>{{ getCustomers(item.customers)}}</td>
             <td>{{item.privacy}}</td>
-          </tr>
+        </tr>
+        <tr *ngIf="pinsData.length == 0">
+            <td class="text-center" colspan="4">
+                No Data Available
+            </td>
+        </tr>
     </tbody>
 </table>
 
-<app-add-customer></app-add-customer>
-<app-add-pin></app-add-pin>
+<app-add-customer ></app-add-customer>
+<app-add-pin [parent]="parent"></app-add-pin>
