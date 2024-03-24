@@ -1,0 +1,65 @@
+<div id="pinModal" #pModal data-bs-backdrop="static" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Pin</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetData()"></button>
+        </div>
+        <div class="modal-body">
+            <form class="row justify-content-center" #pinForm="ngForm">
+                <div class="form-group col-8">
+                    <label for="title">Title<span class="required">*</span></label>
+                    <input type="text" class="form-control" name="title" [(ngModel)]="title" required="true" #titleInput="ngModel" />
+                    <div class="form-error" *ngIf="titleInput?.invalid && (titleInput?.dirty || titleInput?.touched) && titleInput.errors">
+                      <div *ngIf="titleInput.errors['required']">Title is required.</div>
+                    </div>
+                </div>
+                <div class="form-group col-8">
+                    <label for="image">Select Image<span class="required">*</span></label>
+                    <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+                 (fileOver)="fileOverBase($event)"
+                 [uploader]="uploader"
+                 class="well my-drop-zone p-3">
+                  <span *ngIf="uploader.queue.length == 0">
+                    Drag and Drop Image here
+                  </span>
+                  <span *ngIf="uploader.queue.length > 0">
+                    <img class="preview-img" [src]="imageUrl" alt="Preview">
+                    {{uploader.queue[0].file.name || ''}}
+                  </span>
+                </div>
+                </div>
+                <div class="form-group col-8">
+                    <label for="customers">Collaborators<span class="required">*</span></label>
+                    <ngx-select [items]="customerData" name="customer" [(ngModel)]="selectedCustomers"
+                    required="true" [multiple]="true"></ngx-select>
+                </div>
+                <div class="form-group col-8">
+                    <label for="privacy">Privacy<span class="required">*</span></label>
+                    <div class="d-flex">
+                      <div>
+                        <input class="form-check-input" type="radio" name="privacy" id="public"
+                        value="public" [(ngModel)]="privacy" required="true" #privacyInput="ngModel">
+                        <span class="ms-2">Public</span>
+                      </div>
+                      <div class="ms-3">
+                        <input class="form-check-input" type="radio" name="privacy" id="private"
+                        value="private" [(ngModel)]="privacy" required="true">
+                        <span class="ms-2">Private</span>
+                      </div>                      
+                    </div>
+                    <div class="form-error" *ngIf="privacyInput?.invalid && (privacyInput?.dirty || privacyInput?.touched) && privacyInput.errors">
+                      <div *ngIf="privacyInput.errors['required']">Privacy is required.</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">          
+          <button type="button" class="btn btn-primary"
+          (click)="savePinData()" [disabled]="pinForm.invalid || uploader.queue.length == 0">Create</button>
+        </div>
+      </div>
+    </div>
+</div>
+

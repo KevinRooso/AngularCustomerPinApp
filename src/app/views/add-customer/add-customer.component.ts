@@ -19,13 +19,21 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   selectedCountry: String = '';
 
   regionSubscription: any;
+  modalSubscription: any;
 
   public validators = Validators;
 
   @ViewChild('custModal') custModal: any;
   @ViewChild('custForm') custForm: any;
+  currentModal: String = '';
 
   constructor(private mainService: MainService){
+    this.modalSubscription = this.mainService.getModalValue().subscribe(value => {
+      if(value == 'customer'){
+        this.ngOnInit();
+        this.currentModal = value;
+      }
+    });
   }
 
   ngOnInit(){  
@@ -66,7 +74,8 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     const request = {
       region: this.selectedRegion,
       country: this.selectedCountry,
-      title: this.title,
+      id: this.title,
+      text: this.title,
       email: this.email
     };
 
@@ -99,10 +108,12 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     this.custForm.controls['country'].updateValueAndValidity();
     // Used Jquery to Handle Modal events / Could also use NgbBootstrap to handle this
     $(this.custModal.nativeElement).modal('hide');
+    this.mainService.toggleModal('');
   }
 
   ngOnDestroy(){
     // Unsubscribe on Destroy
     this.regionSubscription.unsubscribe();
+    this.modalSubscription.unsubscribe();
   }
 }

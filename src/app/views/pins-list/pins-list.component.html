@@ -1,8 +1,10 @@
 <div class="d-flex justify-content-between align-items-center p-2">
     <h3>List of Pins</h3>
     <div>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal">+ Create Customer</button>
-        <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#pinModal">+ Add Pin</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal"
+        (click)="mainService.toggleModal('customer')">+ Create Customer</button>
+        <button class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#pinModal"
+        (click)="mainService.toggleModal('pin')">+ Add Pin</button>
     </div>
 </div>
 <table class="table table-bordered text-center">
@@ -15,11 +17,13 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>mdo</td>
+        <tr *ngFor="let item of pinsData">
+            <th scope="row">{{item.title}}</th>
+            <td>
+                <img [src]="item.imageFileObj.base64" class="preview-img" />
+            </td>
+            <td>{{ getCustomers(item.customers)}}</td>
+            <td>{{item.privacy}}</td>
           </tr>
     </tbody>
 </table>
